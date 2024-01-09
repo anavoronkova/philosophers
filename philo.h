@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:42:16 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/04 17:17:22 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/09 16:32:51 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <stdint.h>
 
 # define PHILO_MAX 200
 
@@ -30,7 +31,7 @@ typedef enum s_bool
 
 typedef struct s_philo
 {
-	pthread_t		thread;
+	pthread_t		philo_thread;
 	int				philo_id;
 	int				meals_eaten;
 	size_t			time_to_die;
@@ -41,21 +42,30 @@ typedef struct s_philo
 	t_bool			*dead;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*dead_mutex;
-	pthread_mutex_t	*eat_mutex;
 }					t_philo;
 
 typedef struct s_data
 {
 	t_bool			dead;
+	pthread_t		observer_thread;
 	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	eat_mutex;
+	pthread_mutex_t	forks[PHILO_MAX];
 	int				num_of_philos;
 	int				num_of_meals;
 	uint64_t		start_time;
-	t_philo			*philos;
+	t_philo			*philos[PHILO_MAX];
 }					t_data;
 
-void	ft_routine(t_philo *philo, t_program *routine);
+typedef struct s_thread_args
+{
+	t_data	*data;
+	t_philo	*philo;
+}			t_thread_args;
+
+void	throw_error(char *str);
+void	*ft_routine(void *arg);
+void	*ft_observer(void *arg);
+void	cleanup_data(t_data *data);
 
 #endif

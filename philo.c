@@ -6,22 +6,11 @@
 /*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:53:14 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/04 16:28:47 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/09 16:41:02 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	throw_error(char *str)
-{
-	printf("%s", str);
-	exit(EXIT_FAILURE);
-}
-void	cleanup_data(t_data *data)
-{} 
-
-void	ft_exit()
-{}
 
 int	av_check(char **av)
 {
@@ -39,22 +28,48 @@ int	av_check(char **av)
 	return (0);
 }
 
+void	join_threads(t_data *data, t_philo *philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->num_of_philos)
+	{
+		if (pthread_join(philos[i].philo_thread, NULL) != 0)
+		{
+			cleanup_data(&data);
+			throw_error("Error: failed to join philosophers threads");
+		}
+	}
+	if (pthread_join(data->observer_thread, NULL) != 0)
+	{
+		cleanup_data(&data);
+		throw_error("Error: failed to join observer thread");
+	}
+}
+
 int	main(int ac, char **av)
 {
-	t_data	data;
-	t_philo	philos[PHILO_MAX];
+	t_data		data;
+	t_philo		philos[PHILO_MAX];
+	pthread_t	observer_thread;
 
 	if (ac < 5 || ac > 6)
 		throw_error("Invalid number of arguments\n");
 	av_check(av);
-	if (ft_init_data(&data, philos, av))
+	if (ft_init_data(&data, &philos, av))
 		throw_error("Error: Failed to initialize data\n");
-	if (ft_create_threads(&data))
+	if (ft_init_philos(&data, &philos, av))
 	{
 		cleanup_data(&data);
-		throw_error("Error: Failed to create threads\n");
+		throw_error("Error: Failed to initialize philosophers\n");
 	}
-	join_threads(&data);
+	if (pthread_create(&observer_thread, NULL, &ft_observer, &data) != 0)
+	{
+		cleanup_data(&data);
+		throw_error("Error: Failed to create observer thread\n");
+	}
+	join_threads(&data, &philos);
 	cleanup_data(&data);
 
 	return (0);

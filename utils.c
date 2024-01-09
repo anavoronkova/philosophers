@@ -6,11 +6,31 @@
 /*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/04 15:15:45 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/09 15:57:19 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	throw_error(char *str)
+{
+	printf("%s", str);
+	exit(EXIT_FAILURE);
+}
+
+void	cleanup_data(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	pthread_mutex_destroy(&data->dead_mutex);
+	pthread_mutex_destroy(&data->eat_mutex);
+	while (++i < data->num_of_philos)
+		pthread_mutex_destroy(&data->forks[i]);
+}
+
+void	ft_exit()
+{}
 
 int	digit_check(char *av)
 {

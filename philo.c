@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:53:14 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/09 16:41:02 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/11 12:09:17 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,14 +37,14 @@ void	join_threads(t_data *data, t_philo *philos)
 	{
 		if (pthread_join(philos[i].philo_thread, NULL) != 0)
 		{
-			cleanup_data(&data);
-			throw_error("Error: failed to join philosophers threads");
+			cleanup_data(data);
+			throw_error("Error: failed to join philosophers threads\n");
 		}
 	}
 	if (pthread_join(data->observer_thread, NULL) != 0)
 	{
-		cleanup_data(&data);
-		throw_error("Error: failed to join observer thread");
+		cleanup_data(data);
+		throw_error("Error: failed to join the observer thread\n");
 	}
 }
 
@@ -52,24 +52,23 @@ int	main(int ac, char **av)
 {
 	t_data		data;
 	t_philo		philos[PHILO_MAX];
-	pthread_t	observer_thread;
 
 	if (ac < 5 || ac > 6)
 		throw_error("Invalid number of arguments\n");
 	av_check(av);
-	if (ft_init_data(&data, &philos, av))
+	if (ft_init_data(&data, av))
 		throw_error("Error: Failed to initialize data\n");
-	if (ft_init_philos(&data, &philos, av))
+	if (ft_init_philos(&data, philos, av))
 	{
 		cleanup_data(&data);
 		throw_error("Error: Failed to initialize philosophers\n");
 	}
-	if (pthread_create(&observer_thread, NULL, &ft_observer, &data) != 0)
+	if (pthread_create(&data.observer_thread, NULL, &ft_observer, &data) != 0)
 	{
 		cleanup_data(&data);
 		throw_error("Error: Failed to create observer thread\n");
 	}
-	join_threads(&data, &philos);
+	join_threads(&data, philos);
 	cleanup_data(&data);
 
 	return (0);

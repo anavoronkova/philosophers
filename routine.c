@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 15:15:36 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/09 16:34:30 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/11 17:55:11 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,10 +30,15 @@ int	starved(t_philo *philo, t_data *data)
 
 	gettimeofday(&current_time, NULL);
 	timestamp = (current_time.tv_sec * 1000) + (current_time.tv_usec / 1000);
+	printf("Debug: Philosopher %d, Last Meal: %llu, Current Time: %llu, Time to Die: %zu\n", 
+           philo->philo_id, philo->last_meal, timestamp, philo->time_to_die);
 	if (timestamp - philo->last_meal >= philo->time_to_die) 
 	{
-		*philo->dead = true;
-		return (1);
+		printf("Philosopher %d is starving\n", philo->philo_id);
+		pthread_mutex_lock(&data->dead_mutex);
+        data->dead = true;
+        pthread_mutex_unlock(&data->dead_mutex);
+        return (1);
 	}
 	return (0);
 }
@@ -71,8 +76,10 @@ void	ft_meal(t_philo *philo, t_data *data)
 {
 	if (!take_forks(philo, data))
 		return ;
+	printf("Philosopher %d has taken both forks.\n", philo->philo_id);
 	if (starved(philo, data))
 	{
+		printf("Philosopher %d is starving\n", philo->philo_id);
 		pthread_mutex_unlock(philo->left_fork);
 		pthread_mutex_unlock(philo->right_fork);
 		return ;
@@ -89,23 +96,25 @@ void	ft_meal(t_philo *philo, t_data *data)
 
 void	*ft_routine(void *arg)
 {
-	t_thread_args	*args;
+	t_args			*args;
+	t_philo			*philos;
 	t_data			*data;
-	t_philo			*philo;
 
-	args = (t_thread_args *)arg;
+	args = (t_args *)arg;
 	data = args->data;
-	philo = args->philo;
+	philos = args->philo;
 	while (1)
 	{
-		print_message(philo, data, "is thinking\n");
-		ft_meal(philo, data);
-		print_message(philo, data, "is sleeping\n");
-		usleep(philo->time_to_sleep * 1000);
-		if (*philo->dead) 
+		print_message(philos, data, "is thinking\n");
+		ft_meal(philos, data);
+		print_message(philos, data, "is sleeping\n");
+		usleep(philos->time_to_sleep * 1000);
+		if (data->dead) 
 		{
-			print_message(philo, data, "died\n");
+			 printf("Philosopher %d died\n", philos->philo_id);
+			//print_message(philos, data, "died\n");
 			break ;
 		}
 	}
+	return (0);
 }

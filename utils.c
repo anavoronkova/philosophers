@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/09 15:57:19 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/10 16:33:19 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,6 @@ void	cleanup_data(t_data *data)
 	while (++i < data->num_of_philos)
 		pthread_mutex_destroy(&data->forks[i]);
 }
-
-void	ft_exit()
-{}
 
 int	digit_check(char *av)
 {

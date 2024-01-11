@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   observer.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 14:42:47 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/09 16:42:45 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/11 11:51:37 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	check_dead(t_data *data)
 	return (0);
 }
 
-int	check_meals(t_data *data, t_philo *philo)
+int	check_meals(t_data *data)
 {
 	int		i;
 	int		all_ate_required_meals;
@@ -38,7 +38,7 @@ int	check_meals(t_data *data, t_philo *philo)
 	{
 		pthread_mutex_lock(&data->eat_mutex);
 		if (data->num_of_meals != -1 
-			&& philo[i].meals_eaten < data->num_of_meals)
+			&& data->philos[i].meals_eaten < data->num_of_meals)
 			all_ate_required_meals = 0;
 		pthread_mutex_unlock(&data->eat_mutex);
 		i++;
@@ -48,18 +48,14 @@ int	check_meals(t_data *data, t_philo *philo)
 
 void	*ft_observer(void *arg)
 {
-	t_thread_args	*args;
 	t_data			*data;
-	t_philo			*philo;
 
-	args = (t_thread_args *)arg;
-	data = args->data;
-	philo = args->philo;
+	data = (t_data *)arg;
 	while (1)
 	{
 		if (check_dead(data))
 			break ;
-		if (check_meals(data, philo))
+		if (check_meals(data))
 		{
 			pthread_mutex_lock(&data->dead_mutex);
 			data->dead = true;
@@ -68,4 +64,5 @@ void	*ft_observer(void *arg)
 		}
 		usleep(1000);
 	}
+	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 15:52:51 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/14 21:46:18 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/16 19:50:18 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,8 @@
 
 int	ft_init_philos(t_data *data, t_philo *philos, char **av)
 {
-	t_args *args;
-	int	i;
+	t_args	*args;
+	int		i;
 
 	i = -1;
 	args = malloc(data->num_of_philos * sizeof(t_args));
@@ -24,7 +24,7 @@ int	ft_init_philos(t_data *data, t_philo *philos, char **av)
 	while (++i < data->num_of_philos)
 	{
 		args[i].data = data;
-   		args[i].philo = &philos[i];
+		args[i].philo = &philos[i];
 		philos[i].philo_id = i;
 		philos[i].meals_eaten = 0;
 		philos[i].time_to_die = ft_atoi(av[2]);
@@ -34,7 +34,8 @@ int	ft_init_philos(t_data *data, t_philo *philos, char **av)
 		philos[i].eating = false;
 		philos[i].right_fork = &data->forks[i];
 		philos[i].left_fork = &data->forks[(i + 1) % data->num_of_philos];
-		if (pthread_create(&philos[i].philo_thread, NULL, &ft_routine, &args[i]) != 0)
+		if (pthread_create(&philos[i].philo_thread, 
+				NULL, &ft_routine, &args[i]) != 0)
 			return (1);
 	}
 	return (0);

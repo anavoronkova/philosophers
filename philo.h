@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:42:16 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/14 21:45:55 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/16 20:17:58 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ typedef struct s_philo
 typedef struct s_data
 {
 	volatile t_bool	dead;
-	pthread_t		observer_thread;
 	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	eat_mutex;
 	pthread_mutex_t	forks[PHILO_MAX];
@@ -63,12 +62,14 @@ typedef struct s_args
 }			t_args;
 
 void	*ft_routine(void *arg);
-void	*ft_observer(void *arg);
 void	throw_error(char *str);
 void	cleanup_data(t_data *data);
+void	print_message(t_philo *philo, t_data *data, char *str);
 int		ft_init_philos(t_data *data, t_philo *philos, char **av);
 int		ft_init_data(t_data *data, char **av);
-int		check_dead(t_data *data);
+int		check_dead(t_data *data, t_philo *philo);
+int		check_meals(t_data *data, t_philo *philo);
+int		starved(t_philo *philo, t_data *data);
 int		digit_check(char *av);
 int		ft_atoi(const char *str);
 int		ft_usleep(size_t time);

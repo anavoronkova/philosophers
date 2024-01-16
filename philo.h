@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:42:16 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/11 11:48:41 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/14 21:45:55 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,13 +38,14 @@ typedef struct s_philo
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
 	uint64_t		last_meal;
+	t_bool			eating;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
 }					t_philo;
 
 typedef struct s_data
 {
-	t_bool			dead;
+	volatile t_bool	dead;
 	pthread_t		observer_thread;
 	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	eat_mutex;
@@ -67,7 +68,10 @@ void	throw_error(char *str);
 void	cleanup_data(t_data *data);
 int		ft_init_philos(t_data *data, t_philo *philos, char **av);
 int		ft_init_data(t_data *data, char **av);
+int		check_dead(t_data *data);
 int		digit_check(char *av);
 int		ft_atoi(const char *str);
+int		ft_usleep(size_t time);
+size_t	get_current_time(void);
 
 #endif

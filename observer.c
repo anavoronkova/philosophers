@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 14:42:47 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/11 11:51:37 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/14 22:43:38 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,6 @@
 
 int	check_dead(t_data *data)
 {
-	int	i;
-
-	i = 0;
 	pthread_mutex_lock(&data->dead_mutex);
 	if (data->dead == true)
 	{
@@ -56,13 +53,8 @@ void	*ft_observer(void *arg)
 		if (check_dead(data))
 			break ;
 		if (check_meals(data))
-		{
-			pthread_mutex_lock(&data->dead_mutex);
-			data->dead = true;
-			pthread_mutex_unlock(&data->dead_mutex);
 			break ;
-		}
-		usleep(1000);
 	}
-	return (0);
+	ft_usleep(50);
+	return (arg);
 }

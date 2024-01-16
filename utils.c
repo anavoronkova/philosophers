@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/10 16:33:19 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/14 22:06:25 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,15 +18,23 @@ void	throw_error(char *str)
 	exit(EXIT_FAILURE);
 }
 
-void	cleanup_data(t_data *data)
+int	ft_usleep(size_t time)
 {
-	int	i;
+	u_int64_t	start;
 
-	i = -1;
-	pthread_mutex_destroy(&data->dead_mutex);
-	pthread_mutex_destroy(&data->eat_mutex);
-	while (++i < data->num_of_philos)
-		pthread_mutex_destroy(&data->forks[i]);
+	start = get_current_time();
+	while ((get_current_time() - start) < time)
+		usleep(500);
+	return (0);
+}
+
+size_t	get_current_time(void)
+{
+	struct timeval	time;
+
+	if (gettimeofday(&time, NULL) == -1)
+		throw_error("gettimeofday() error\n");
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 
 int	digit_check(char *av)

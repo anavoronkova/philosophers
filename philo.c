@@ -6,11 +6,22 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 15:53:14 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/11 12:09:17 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/14 22:38:46 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+void	cleanup_data(t_data *data)
+{
+	int	i;
+
+	i = -1;
+	pthread_mutex_destroy(&data->dead_mutex);
+	pthread_mutex_destroy(&data->eat_mutex);
+	while (++i < data->num_of_philos)
+		pthread_mutex_destroy(&data->forks[i]);
+}
 
 int	av_check(char **av)
 {
@@ -33,6 +44,11 @@ void	join_threads(t_data *data, t_philo *philos)
 	int	i;
 
 	i = 0;
+	if (pthread_join(data->observer_thread, NULL) != 0)
+	{
+		cleanup_data(data);
+		throw_error("Error: failed to join the observer thread\n");
+	}
 	while (i < data->num_of_philos)
 	{
 		if (pthread_join(philos[i].philo_thread, NULL) != 0)
@@ -40,11 +56,7 @@ void	join_threads(t_data *data, t_philo *philos)
 			cleanup_data(data);
 			throw_error("Error: failed to join philosophers threads\n");
 		}
-	}
-	if (pthread_join(data->observer_thread, NULL) != 0)
-	{
-		cleanup_data(data);
-		throw_error("Error: failed to join the observer thread\n");
+		i++;
 	}
 }
 

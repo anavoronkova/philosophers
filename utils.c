@@ -6,25 +6,28 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/14 22:06:25 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/17 20:35:51 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	throw_error(char *str)
+void	throw_error(t_args *args, char *str)
 {
+	mutex_destroy(args);
 	printf("%s", str);
 	exit(EXIT_FAILURE);
 }
 
-int	ft_usleep(size_t time)
+int	ft_usleep(t_data *data, t_philo *philo, size_t time)
 {
 	u_int64_t	start;
 
 	start = get_current_time();
-	while ((get_current_time() - start) < time)
+	while (!check_dead(data, philo) && (get_current_time() - start) < time)
 		usleep(500);
+	if (check_dead(data, philo))
+		return (1);
 	return (0);
 }
 
@@ -33,7 +36,7 @@ size_t	get_current_time(void)
 	struct timeval	time;
 
 	if (gettimeofday(&time, NULL) == -1)
-		throw_error("gettimeofday() error\n");
+		printf("gettimeofday() error\n");
 	return (time.tv_sec * 1000 + time.tv_usec / 1000);
 }
 

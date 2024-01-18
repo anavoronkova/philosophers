@@ -2,9 +2,9 @@ NAME := philo
 
 CC := gcc
 
-CFLAGS := -Wall -Wextra -Werror
+CFLAGS := -Wall -Wextra -Werror -lpthread
 
-SOURCE := philo.c init.c routine.c routine_checks.c utils.c
+SOURCE := philo.c init.c routine.c routine_checks.c utils.c errors.c
 
 OBJS := $(SOURCE:.c=.o)
 

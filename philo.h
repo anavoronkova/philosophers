@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philo.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:42:16 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/17 20:22:07 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/18 17:04:52 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ typedef struct s_data
 	volatile t_bool	dead;
 	pthread_mutex_t	dead_mutex;
 	pthread_mutex_t	forks[PHILO_MAX];
+	pthread_mutex_t	write_mutex;
 	int				num_of_philo;
 	int				num_of_meals;
 	uint64_t		start_time;
@@ -62,6 +63,7 @@ typedef struct s_args
 
 void	*ft_routine(void *arg);
 void	throw_error(t_args *args, char *str);
+void	early_error(char *str);
 void	mutex_destroy(t_args *args);
 void	print_message(t_philo *philo, t_data *data, char *str);
 int		ft_init_philo(t_args *args, char **av);

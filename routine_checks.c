@@ -3,20 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   routine_checks.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/09 14:42:47 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/17 17:52:44 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/18 18:23:14 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
-
-void	print_message(t_philo *philo, t_data *data, char *str)
-{
-	printf("%llu %i %s", (get_current_time() - data->start_time), 
-		philo->philo_id, str);
-}
 
 int	check_dead(t_data *data, t_philo *philo)
 {

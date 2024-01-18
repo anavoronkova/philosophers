@@ -3,25 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/17 20:35:51 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/18 17:38:54 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-void	throw_error(t_args *args, char *str)
+void	print_message(t_philo *philo, t_data *data, char *str)
 {
-	mutex_destroy(args);
-	printf("%s", str);
-	exit(EXIT_FAILURE);
+	pthread_mutex_lock(&data->write_mutex);
+	printf("%lu %i %s", (get_current_time() - data->start_time), 
+		philo->philo_id, str);
+	pthread_mutex_unlock(&data->write_mutex);
 }
 
 int	ft_usleep(t_data *data, t_philo *philo, size_t time)
 {
-	u_int64_t	start;
+	size_t	start;
 
 	start = get_current_time();
 	while (!check_dead(data, philo) && (get_current_time() - start) < time)

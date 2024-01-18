@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 15:52:51 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/17 19:44:23 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/18 19:08:09 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ int	ft_init_philo(t_args *args, char **av)
 		args[i].philo->time_to_sleep = ft_atoi(av[4]);
 		args[i].philo->last_meal = args[i].data->start_time;
 		args[i].philo->right_fork = &args[i].data->forks[i];
-		args[i].philo->left_fork = &args[i].data->forks[(i + 1) % args[i].data->num_of_philo];
+		args[i].philo->left_fork = 
+			&args[i].data->forks[(i + 1) 
+			% args[i].data->num_of_philo];
 		if (pthread_mutex_init(&args[i].philo->eat_mutex, NULL) != 0)
-            return (1);
+			return (1);
 		if (pthread_create(&args[i].philo->philo_thread, 
 				NULL, &ft_routine, &args[i]) != 0)
 			return (1);
@@ -49,6 +51,8 @@ int	ft_init_data(t_data *data, char **av)
 	data->start_time = get_current_time();
 	data->dead = false;
 	if (pthread_mutex_init(&data->dead_mutex, NULL) != 0)
+		return (1);
+	if (pthread_mutex_init(&data->write_mutex, NULL) != 0)
 		return (1);
 	while (++i < data->num_of_philo)
 	{

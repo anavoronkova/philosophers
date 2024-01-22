@@ -6,11 +6,34 @@
 /*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 16:52:29 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/04 15:15:45 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/22 17:46:14 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+int	ft_usleep(t_data *data, size_t time)
+{
+	size_t	start;
+
+	start = get_current_time();
+	while ((get_current_time() - start) < time)
+	{
+		usleep(10);
+		if (check_dead_flag(data) || check_meals_flag(data))
+		return (1);
+	}
+	return (0);
+}
+
+size_t	get_current_time(void)
+{
+	struct timeval	time;
+
+	if (gettimeofday(&time, NULL) == -1)
+		printf("gettimeofday() error\n");
+	return (time.tv_sec * 1000 + time.tv_usec / 1000);
+}
 
 int	digit_check(char *av)
 {

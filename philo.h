@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 14:42:16 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/04 17:17:22 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/22 13:05:03 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <stdio.h>
 # include <limits.h>
 # include <sys/time.h>
+# include <stdint.h>
 
 # define PHILO_MAX 200
 
@@ -30,32 +31,74 @@ typedef enum s_bool
 
 typedef struct s_philo
 {
-	pthread_t		thread;
+	pthread_t		philo_thread;
 	int				philo_id;
 	int				meals_eaten;
 	size_t			time_to_die;
 	size_t			time_to_eat;
 	size_t			time_to_sleep;
-	uint64_t		last_meal;
-	t_bool			eating;
-	t_bool			*dead;
+	size_t			last_meal;
+	pthread_mutex_t	eat_mutex;
 	pthread_mutex_t	*right_fork;
 	pthread_mutex_t	*left_fork;
-	pthread_mutex_t	*dead_mutex;
-	pthread_mutex_t	*eat_mutex;
 }					t_philo;
 
 typedef struct s_data
 {
 	t_bool			dead;
+	t_bool			all_meals;
+	pthread_mutex_t	forks[PHILO_MAX];
 	pthread_mutex_t	dead_mutex;
-	pthread_mutex_t	eat_mutex;
-	int				num_of_philos;
+	pthread_mutex_t	write_mutex;
+	pthread_mutex_t	meals_mutex;
+	int				num_of_philo;
 	int				num_of_meals;
-	uint64_t		start_time;
-	t_philo			*philos;
+	size_t			start_time;
 }					t_data;
 
-void	ft_routine(t_philo *philo, t_program *routine);
+typedef struct s_args
+{
+	t_data	*data;
+	t_philo	*philo;
+}			t_args;
+
+//philo
+void	mutex_destroy(t_args *args);
+void	join_threads(t_args *args, pthread_t observer);
+
+//checks
+int		av_second_check(char **av);
+int		av_first_check(int ac, char **av);
+int		ft_check_initialization(t_args *args, t_data *data, 
+			pthread_t *observer, char **av);
+
+//init
+int		ft_init_data(t_data *data, char **av);
+int		ft_init_forks(t_args *args);
+int		ft_init_philo(t_args *args, char **av);
+
+//routine
+void	*ft_routine(void *arg);
+int		ft_meal(t_philo *philo, t_data *data);
+int		take_forks(t_philo *philo, t_data *data);
+
+//observer
+void	*ft_observer(void *arg);
+int		check_starved(t_data *data, t_philo *philo);
+int		check_meals(t_args *args);
+int		check_meals_flag(t_data *data);
+int		check_dead_flag(t_data *data);
+
+//utils
+int		ft_atoi(const char *str);
+int		digit_check(char *av);
+size_t	get_current_time(void);
+int		ft_usleep(t_data *data, size_t time);
+
+// errors_print
+void	print_message(t_philo *philo, t_data *data, char *str);
+void	print_dead_message(t_args *args, int i);
+void	early_error(char *str);
+void	throw_error(t_args *args, char *str);
 
 #endif

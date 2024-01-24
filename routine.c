@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: avoronko <avoronko@student.42.fr>          +#+  +:+       +#+        */
+/*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 15:15:36 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/22 18:08:49 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/24 14:17:06 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,8 +45,8 @@ int	ft_meal(t_philo *philo, t_data *data)
 	philo->last_meal = get_current_time();
 	if (data->num_of_meals != -1)
 		philo->meals_eaten++;
-	pthread_mutex_unlock(&philo->eat_mutex);
 	print_message(philo, data, "is eating\n");
+	pthread_mutex_unlock(&philo->eat_mutex);
 	if (ft_usleep(data, philo->time_to_eat))
 	{
 		pthread_mutex_unlock(philo->left_fork);
@@ -69,7 +69,7 @@ void	*ft_routine(void *arg)
 	philo = args->philo;
 
 	if (philo->philo_id % 2 != 0) 
-		ft_usleep(data, philo->time_to_eat / 10);
+		ft_usleep(data, 1);
 	while (!check_dead_flag(data) && !check_meals_flag(data))
 	{
 		if (!ft_meal(philo, data))
@@ -78,7 +78,7 @@ void	*ft_routine(void *arg)
 		if (ft_usleep(data, philo->time_to_sleep))
 			break ;
 		print_message(philo, data, "is thinking\n");
-		ft_usleep(data, 10); 
+		ft_usleep(data, 1); 
 	}
 	return (arg);
 }

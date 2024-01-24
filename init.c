@@ -6,7 +6,7 @@
 /*   By: avoronko <avoronko@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/04 15:52:51 by avoronko          #+#    #+#             */
-/*   Updated: 2024/01/21 10:34:22 by avoronko         ###   ########.fr       */
+/*   Updated: 2024/01/22 20:58:37 by avoronko         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	ft_init_philo(t_args *args, char **av)
 	i = -1;
 	while (++i < args->data->num_of_philo)
 	{
-		args[i].philo->philo_id = i;
+		args[i].philo->philo_id = i + 1;
 		args[i].philo->meals_eaten = 0;
 		args[i].philo->time_to_die = ft_atoi(av[2]);
 		args[i].philo->time_to_eat = ft_atoi(av[3]);
